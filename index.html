@@ -119,7 +119,7 @@
                 
                 <div class="input-group">
                     <div class="label-container">
-                        <label><i class="fa-solid id-card"></i> Sınıf ve Öğrenci No:</label>
+                        <label><i class="fa-solid fa-school"></i> Sınıf ve Öğrenci No:</label>
                         <button type="button" @click="panodanYapistir('ogrenci')" class="paste-btn"><i class="fa-solid fa-clipboard"></i> Yapıştır</button>
                     </div>
                     <input type="text" id="ogrenci" x-model="form.ogrenci" placeholder="Örn: 11-A / 117" required>
@@ -165,7 +165,7 @@
                     </div>
                     
                     <input type="file" id="gorselDosya" accept="image/*" @change="gorselYukle($event)" :required="editIndex === -1 && !form.gorselData">
-                    <p style="font-size: 0.7rem; color: #10b981; margin-top: 5px;"><i class="fa-solid fa-circle-check"></i> Fotoğraflar optimize edilerek doğrudan sunucuya kaydedilir.</p>
+                    <p style="font-size: 0.7rem; color: #10b981; margin-top: 5px;"><i class="fa-solid fa-circle-check"></i> Fotoğraflar optimize edilerek doğrudan kaydedilir.</p>
                 </div>
 
                 <div class="input-group">
@@ -310,7 +310,7 @@
 
                 <div style="max-height: 500px; overflow-y: auto; padding-right:10px;">
                     <div x-show="divanSonuclar.length === 0" style="text-align:center; color:#ff9999; padding: 30px;">
-                        Aradığınız kelime bulunamadı veya JSON yükleniyor...
+                        Aradığınız kelime bulunamadı...
                     </div>
 
                     <template x-for="k in divanSonuclar" :key="k.sozcuk">
@@ -353,7 +353,7 @@
     function antolojiApp() {
         return {
             aktifSekme: 'muze', editIndex: -1, secilenDetay: null, tahmin: '', oyunMesaj: '', oyunBasarili: false,
-            bulmaca: {}, kayitDurumu: 'Sunucuya Bağlanıyor...', divanArama: '', secilenHarf: '', nisanyanArsivi: [],
+            bulmaca: {}, kayitDurumu: 'Bulutta Güvende', divanArama: '', secilenHarf: '', nisanyanArsivi: [],
             alfabe: ['A', 'B', 'C', 'Ç', 'D', 'E', 'F', 'G', 'Ğ', 'H', 'I', 'İ', 'J', 'K', 'L', 'M', 'N', 'O', 'Ö', 'P', 'R', 'S', 'Ş', 'T', 'U', 'Ü', 'V', 'Y', 'Z'],
             temalar: [
                 { id: 'duygu', ad: 'Duygu & Gönül', icon: '<i class="fa-solid fa-heart"></i>' },
@@ -365,18 +365,15 @@
             
             bulgular: [], 
 
-            async init() {
-                try {
-                    let response = await fetch('/api/kelimeler');
-                    let data = await response.json();
-                    if (data && data.length > 0) {
-                        this.bulgular = data;
-                    } else {
+            init() {
+                let kayitliVeri = localStorage.getItem('dilimiz_bulgular');
+                if (kayitliVeri) {
+                    try {
+                        this.bulgular = JSON.parse(kayitliVeri);
+                    } catch(e) {
                         this.varsayilanlariYukle();
                     }
-                    this.kayitDurumu = 'Sistem Hazır';
-                } catch (e) {
-                    this.kayitDurumu = 'Bağlantı Hatası!';
+                } else {
                     this.varsayilanlariYukle();
                 }
 
@@ -384,22 +381,13 @@
                 this.bulmacaBaslat();
             },
 
-            async veriKaydet() {
-                this.kayitDurumu = 'Sunucuya Kaydediliyor...';
+            veriKaydet() {
                 try {
-                    const response = await fetch('/api/kaydet', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(this.bulgular)
-                    });
-                    
-                    const result = await response.json();
-                    if (result.status === 'success') {
-                        this.kayitDurumu = 'Sunucuda Güncel';
-                        setTimeout(() => { if(this.kayitDurumu === 'Sunucuda Güncel') this.kayitDurumu = 'Bulutta güvenle saklanıyor'; }, 2000);
-                    } else { throw new Error('Kayıt başarısız'); }
-                } catch (e) {
-                    this.kayitDurumu = 'Sunucu Hatası!';
+                    localStorage.setItem('dilimiz_bulgular', JSON.stringify(this.bulgular));
+                    this.kayitDurumu = 'Cihazda Güncel';
+                    setTimeout(() => { this.kayitDurumu = 'Bulutta Güvende'; }, 2000);
+                } catch(e) {
+                    this.kayitDurumu = 'Kayıt Hatası!';
                 }
             },
 
@@ -514,7 +502,7 @@
                 });
             },
 
-            form: { ogrenci: '', kelime: '', konum: '', tema: 'duygun', gorselData: '', ilkAnlam: '', evrimKok: '' }
+            form: { ogrenci: '', kelime: '', konum: '', tema: 'duygu', gorselData: '', ilkAnlam: '', evrimKok: '' }
         }
     }
 </script>
