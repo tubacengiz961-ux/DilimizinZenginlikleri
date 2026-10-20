@@ -379,14 +379,17 @@
 
             init() {
                 let kayitliVeri = localStorage.getItem('dilimiz_bulgular');
-                if (kayitliVeri) {
+                let versiyon = localStorage.getItem('dilimiz_versiyon');
+                
+                // Eğer daha önce kaydedilmiş eski versiyon varsa veya hiç yoksa güncel temiz şablonu yüklüyoruz
+                if (!kayitliVeri || versiyon !== 'v2') {
+                    this.varsayilanlariYukle();
+                } else {
                     try {
                         this.bulgular = JSON.parse(kayitliVeri);
                     } catch(e) {
                         this.varsayilanlariYukle();
                     }
-                } else {
-                    this.varsayilanlariYukle();
                 }
 
                 this.veriYukle();
@@ -396,6 +399,7 @@
             veriKaydet() {
                 try {
                     localStorage.setItem('dilimiz_bulgular', JSON.stringify(this.bulgular));
+                    localStorage.setItem('dilimiz_versiyon', 'v2');
                     this.kayitDurumu = 'Cihazda Güncel';
                     setTimeout(() => { this.kayitDurumu = 'Bulutta Güvende'; }, 2000);
                 } catch(e) {
@@ -405,7 +409,7 @@
 
             varsayilanlariYukle() {
                 this.bulgular = [
-                    { ogrenci: "10-B / 256", kelime: "SAGU", konum: "Balasagun", tema: "divan", gorselData: "https://images.unsplash.com/photo-1502224562085-639556652f33?w=400&q=80", ilkAnlam: "Ölenin ardından söylenen yas şiiri, ağıt.", evrimKok: "[Divânu Lugâti't-Türk, 1074] Alp Er Tunga öldi mü / Isız ajun kaldı mu" }
+                    { ogrenci: "10-B / 256", kelime: "SAGU", konum: "Balasagun", tema: "divan", gorselData: "https://images.unsplash.com/photo-1544717305-2782549b5136?w=400&q=80", ilkAnlam: "Ölenin ardından söylenen yas şiiri, ağıt.", evrimKok: "[Divânu Lugâti't-Türk, 1074] Alp Er Tunga öldi mü / Isız ajun kaldı mu" }
                 ];
                 this.veriKaydet();
             },
