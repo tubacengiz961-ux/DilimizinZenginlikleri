@@ -70,6 +70,8 @@
         .direct-map-btn { background: linear-gradient(135deg, #f72585, #b5179e); color: white; border: 1px solid rgba(255,255,255,0.1); padding: 10px; border-radius: 12px; font-weight: 600; font-size: 0.8rem; cursor: pointer; text-decoration: none; text-align: center; flex: 1; display: flex; align-items: center; justify-content: center; gap: 5px; }
         .tdk-btn { background: linear-gradient(135deg, #7209b7, #560bad); color: white; border: 1px solid rgba(255,255,255,0.1); padding: 10px; border-radius: 12px; font-weight: 600; font-size: 0.8rem; cursor: pointer; text-decoration: none; text-align: center; flex: 1; display: flex; align-items: center; justify-content: center; gap: 5px; }
         .nisanyan-btn { background: linear-gradient(135deg, #2b9348, #007f5f); color: white; border: 1px solid rgba(255,255,255,0.1); padding: 10px; border-radius: 12px; font-weight: 600; font-size: 0.8rem; cursor: pointer; text-decoration: none; text-align: center; flex: 1; display: flex; align-items: center; justify-content: center; gap: 5px; }
+        .edit-btn { background: rgba(72, 202, 228, 0.1); border: 1px solid var(--border-gold); color: var(--gold-light); border-radius: 12px; padding: 8px 14px; font-weight: 600; font-size: 0.78rem; cursor: pointer; flex: 1;}
+        .delete-btn { background: rgba(230, 57, 70, 0.15); border: 1px solid rgba(230, 57, 70, 0.4); color: #ff8689; border-radius: 12px; padding: 8px 14px; font-weight: 600; font-size: 0.78rem; cursor: pointer; flex: 1;}
         .embedded-map-frame { width: 100%; height: 150px; border-radius: 14px; border: 1px solid rgba(148,210,189,0.2); margin-top: 15px; overflow: hidden; filter: invert(90%) hue-rotate(180deg); }
         .mindmap-wrapper { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 18px; margin-top: 25px; }
         .theme-branch { background: rgba(11, 19, 43, 0.8); border-radius: 20px; padding: 20px; border: 1px solid var(--border-gold); }
@@ -123,7 +125,7 @@
         </div>
 
         <div x-show="aktifSekme === 'ekle'" class="section-box" :class="aktifSekme === 'ekle' ? 'active' : ''">
-            <h3 style="color:var(--gold-light); text-align:center; margin-top:0; font-family:'Cinzel', serif;">✨ Yeni Arkeolojik Hazine Ekle</h3>
+            <h3 style="color:var(--gold-light); text-align:center; margin-top:0; font-family:'Cinzel', serif;" x-text="editIndex === -1 ? '✨ Yeni Arkeolojik Hazine Ekle' : '✏️ Kelimeyi Düzenle'"></h3>
             <form @submit.prevent="kaydet()">
                 
                 <div class="input-group">
@@ -231,6 +233,10 @@
                                 <div class="row-btns">
                                     <a :href="'https://sozluk.gov.tr/?ara=' + encodeURIComponent(b.kelime)" target="_blank" class="tdk-btn"><i class="fa-solid fa-book"></i> TDK Sözlük</a>
                                     <a :href="'https://www.nisanyansozluk.com/kelime/' + encodeURIComponent(b.kelime)" target="_blank" class="nisanyan-btn"><i class="fa-solid fa-book-open-reader"></i> Nişanyan</a>
+                                </div>
+                                <div class="row-btns" style="margin-top: 5px;">
+                                    <button class="edit-btn" @click="duzenle(b)"><i class="fa-solid fa-pen-to-square"></i> Düzenle</button>
+                                    <button class="delete-btn" @click="sil(b.rowIndex)"><i class="fa-solid fa-trash-can"></i> Sil</button>
                                 </div>
                             </div>
                             <div class="embedded-map-frame no-print">
@@ -365,6 +371,7 @@
         return {
             scriptURL: 'https://script.google.com/macros/s/AKfycbxkpsdzHrKS0eCCTTLR_hPS3MHpFdoux-CBz4SmlbF2lcl-mvsMqKvVX64AameXeXhrSg/exec',
             aktifSekme: 'muze', 
+            editIndex: -1,
             secilenDetay: null, 
             tahmin: '', 
             oyunMesaj: '', 
@@ -397,8 +404,9 @@
                     let data = await response.json();
                     
                     if(data && data.length > 0) {
-                        // Verileri tersine çeviriyoruz ki en son eklenen müzede en üstte çıksın
                         this.bulgular = data.reverse(); 
+                    } else {
+                        this.bulgular = [];
                     }
                     this.kayitDurumu = 'Bulut ile Senkronize';
                     this.bulmacaBaslat();
@@ -447,15 +455,21 @@
                 this.kayitDurumu = 'Buluta Kaydediliyor...';
                 let gonderilecekVeri = {...this.form};
                 
-                // Formu anında temizliyoruz ki öğrenci tekrar tekrar aynı kelimeyi göndermesin
+                if(this.editIndex !== -1) {
+                    gonderilecekVeri.action = "edit";
+                    gonderilecekVeri.rowIndex = this.editIndex;
+                } else {
+                    gonderilecekVeri.action = "add";
+                }
+                
                 this.form = { ogrenci: '', kelime: '', konum: '', tema: 'duygu', gorselData: '', ilkAnlam: '', evrimKok: '' };
+                this.editIndex = -1;
                 document.getElementById('gorselDosya').value = "";
                 
                 this.aktifSekme = 'muze';
                 setTimeout(() => AOS.refresh(), 100);
 
                 try {
-                    // Google Apps Script'e veri gönderimi
                     await fetch(this.scriptURL, {
                         method: 'POST',
                         mode: 'no-cors',
@@ -463,10 +477,35 @@
                         body: JSON.stringify(gonderilecekVeri)
                     });
                     
-                    // Gönderim başarılı olunca listeyi Google E-Tablo'dan tekrar tazeleyip indiriyoruz
-                    await this.bulgulariGetir();
+                    // İşlemin buluta işlemesi için kısa bir süre bekleyip ekranı yeniliyoruz
+                    setTimeout(() => this.bulgulariGetir(), 1500);
                 } catch(e) {
                     this.kayitDurumu = 'Gönderme Hatası!';
+                }
+            },
+
+            duzenle(kelimeData) {
+                this.form = {...kelimeData}; 
+                this.editIndex = kelimeData.rowIndex; 
+                this.aktifSekme = 'ekle';
+                window.scrollTo(0, 0); // Sayfanın en üstüne form alanına kaydır
+            },
+
+            async sil(rowIndex) {
+                if(confirm("Bu kelimeyi sergiden tamamen silmek istediğinize emin misiniz?")) {
+                    this.kayitDurumu = 'Buluttan Siliniyor...';
+                    try {
+                        await fetch(this.scriptURL, {
+                            method: 'POST',
+                            mode: 'no-cors',
+                            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                            body: JSON.stringify({ action: "delete", rowIndex: rowIndex })
+                        });
+                        
+                        setTimeout(() => this.bulgulariGetir(), 1500);
+                    } catch(e) {
+                        this.kayitDurumu = 'Silme Hatası!';
+                    }
                 }
             },
 
