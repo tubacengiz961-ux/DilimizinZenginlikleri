@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <title>Ünal Aysal Anadolu Lisesi Dilimizin Zenginlikleri Projesi | Türk Dili ve Edebiyatı Öğretmeni Tuba CENGİZ</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;800&family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+
+    <style>
+        :root { --bg-deep: #120e0a; --bg-glow: #2a1f18; --surface: rgba(245, 235, 220, 0.04); --surface-hover: rgba(245, 235, 220, 0.08); --border-gold: rgba(212, 175, 55, 0.35); --gold: #d4af37; --gold-light: #fbeea1; --accent-red: #780000; --accent-blue: #005f73; --text-main: #eaeaeb; --text-muted: #b0a89d; }
+        * { box-sizing: border-box; font-family: 'Poppins', sans-serif; transition: all 0.3s ease; outline: none; }
+        body { background-color: transparent; color: var(--text-main); min-height: 100vh; padding: 30px 15px; margin: 0; display: flex; align-items: flex-start; justify-content: center; }
+        .container { width: 100%; max-width: 1050px; background: var(--surface); backdrop-filter: blur(30px); border: 1px solid var(--border-gold); padding: 40px; border-radius: 30px; box-shadow: 0 30px 70px rgba(0,0,0,0.8), inset 0 0 60px rgba(212, 175, 55, 0.03); margin-top: 20px; margin-bottom: 40px; position: relative; z-index: 10; }
+        .word-save-indicator { position: fixed; top: 20px; right: 25px; background: rgba(18, 14, 10, 0.85); border: 1px solid var(--border-gold); color: var(--gold-light); padding: 8px 16px; border-radius: 30px; font-size: 0.78rem; font-weight: 600; display: flex; align-items: center; gap: 8px; box-shadow: 0 5px 20px rgba(0,0,0,0.6); z-index: 100; backdrop-filter: blur(10px); }
+        .author-badge { background: linear-gradient(135deg, rgba(212, 175, 55, 0.15), rgba(120, 0, 0, 0.2)); border: 1px solid var(--border-gold); color: var(--gold-light); font-weight: 600; padding: 8px 18px; border-radius: 50px; font-size: 0.8rem; display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 0 20px rgba(212, 175, 55, 0.15); margin-bottom: 20px; }
+        .header-title { text-align: center; font-family: 'Cinzel', serif; font-size: 1.85rem; font-weight: 800; letter-spacing: 1.5px; background: linear-gradient(90deg, #fff, var(--gold-light), var(--gold)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 8px; text-transform: uppercase; }
+        .sub-title { text-align: center; color: var(--text-muted); font-size: 1rem; margin-top: 0; margin-bottom: 30px; font-family: 'Playfair Display', serif; font-style: italic; }
+        .nav-menu { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-bottom: 35px; }
+        .nav-btn { padding: 11px 20px; background: var(--surface); border: 1px solid rgba(212,175,55,0.15); border-radius: 14px; color: var(--text-muted); font-weight: 600; cursor: pointer; font-size: 0.85rem; display: flex; align-items: center; gap: 8px; font-family: 'Cinzel', serif; }
+        .nav-btn:hover { background: var(--surface-hover); color: var(--gold-light); border-color: var(--gold); }
+        .nav-btn.active { background: linear-gradient(135deg, var(--gold), #997a00); color: #120e0a; border-color: transparent; box-shadow: 0 8px 25px rgba(212, 175, 55, 0.35); font-weight: 800; }
+        .nav-btn.divan-btn { border-color: rgba(10, 147, 150, 0.4); color: #94d2bd; }
+        .nav-btn.divan-btn:hover { background: rgba(10, 147, 150, 0.15); border-color: #0a9396; color: #fff; }
+        .nav-btn.divan-btn.active { background: linear-gradient(135deg, #0a9396, #005f73); color: #fff; box-shadow: 0 8px 25px rgba(10, 147, 150, 0.4); }
+        .section-box { display: none; animation: fadeIn 0.5s ease; }
+        .section-box.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .input-group { margin-top: 18px; text-align: left; }
+        .label-container { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 8px; }
+        label { font-size: 0.85rem; color: var(--gold-light); font-weight: 600; margin-bottom: 0; }
+        .paste-btn { background: rgba(212, 175, 55, 0.15); border: 1px solid var(--border-gold); color: var(--gold-light); padding: 3px 10px; border-radius: 8px; font-size: 0.7rem; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 5px; }
+        .paste-btn:hover { background: var(--gold); color: #120e0a; }
+        input, select, textarea { width: 100%; padding: 14px 18px; background: rgba(18, 14, 10, 0.8); border: 1px solid rgba(212,175,55,0.2); border-radius: 14px; color: #fff; font-size: 0.95rem; }
+        input[type="file"] { padding: 10px 18px; cursor: pointer; }
+        input:focus, select:focus, textarea:focus { border-color: var(--gold); box-shadow: 0 0 15px rgba(212, 175, 55, 0.2); }
+        .btn-submit { width: 100%; padding: 16px; margin-top: 30px; background: linear-gradient(135deg, var(--gold), #997a00); border: none; border-radius: 14px; color: #120e0a; font-size: 1.05rem; font-weight: 800; font-family: 'Cinzel', serif; cursor: pointer; box-shadow: 0 10px 30px rgba(212, 175, 55, 0.25); }
+        .btn-submit:hover { transform: translateY(-3px); box-shadow: 0 15px 35px rgba(212, 175, 55, 0.4); }
+        .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 25px; margin-top: 25px; }
+        .treasure-card { background: linear-gradient(145deg, rgba(28, 20, 15, 0.8), rgba(18, 14, 10, 0.95)); border: 1px solid var(--border-gold); border-radius: 22px; overflow: hidden; box-shadow: 0 15px 35px rgba(0,0,0,0.6); position: relative; }
+        .treasure-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, transparent, var(--gold), transparent); }
+        .treasure-card:hover { transform: translateY(-5px); border-color: var(--gold-light); box-shadow: 0 20px 45px rgba(212,175,55,0.15); }
+        .treasure-card.divan-card { background: linear-gradient(145deg, rgba(0, 95, 115, 0.6), rgba(10, 147, 150, 0.2)); border-color: rgba(148, 210, 189, 0.5); }
+        .treasure-card.divan-card::before { background: linear-gradient(90deg, transparent, #94d2bd, transparent); }
+        .treasure-card.divan-card:hover { border-color: #94d2bd; box-shadow: 0 20px 45px rgba(10, 147, 150, 0.3); }
+        .img-container { width: 100%; height: 190px; background: rgba(0, 0, 0, 0.8); display: flex; align-items: center; justify-content: center; padding: 10px; border-bottom: 1px solid rgba(212,175,55,0.15); }
+        .card-img { max-width: 100%; max-height: 100%; object-fit: cover; border-radius: 12px; }
+        .card-body { padding: 25px; }
+        .card-badge { background: rgba(212, 175, 55, 0.15); border: 1px solid var(--border-gold); color: var(--gold-light); font-weight: 700; padding: 5px 12px; border-radius: 20px; font-size: 0.7rem; }
+        .divan-badge { background: rgba(10, 147, 150, 0.3); border: 1px solid #94d2bd; color: #fff; font-weight: 700; padding: 5px 12px; border-radius: 20px; font-size: 0.7rem; margin-left: 5px; }
+        .location-badge { background: rgba(0, 95, 115, 0.2); border: 1px solid rgba(0, 95, 115, 0.5); color: #94d2bd; font-weight: 700; padding: 5px 12px; border-radius: 20px; font-size: 0.7rem; margin-top: 8px; display: inline-block;}
+        .btn-action-group { display: flex; flex-direction: column; gap: 10px; margin-top: 20px; }
+        .row-btns { display: flex; gap: 10px; }
+        .speak-btn { background: linear-gradient(135deg, var(--accent-blue), #003f4f); color: white; border: 1px solid rgba(255,255,255,0.1); padding: 10px; border-radius: 12px; font-weight: 600; font-size: 0.8rem; cursor: pointer; flex: 1; }
+        .direct-map-btn { background: linear-gradient(135deg, var(--accent-red), #4a0000); color: white; border: 1px solid rgba(255,255,255,0.1); padding: 10px; border-radius: 12px; font-weight: 600; font-size: 0.8rem; cursor: pointer; text-decoration: none; text-align: center; flex: 1; display: flex; align-items: center; justify-content: center; gap: 5px; }
+        .tdk-btn { background: linear-gradient(135deg, #4c1d95, #3b0764); color: white; border: 1px solid rgba(255,255,255,0.1); padding: 10px; border-radius: 12px; font-weight: 600; font-size: 0.8rem; cursor: pointer; text-decoration: none; text-align: center; flex: 1; display: flex; align-items: center; justify-content: center; gap: 5px; box-shadow: 0 4px 15px rgba(76,29,149,0.3); }
+        .nisanyan-btn { background: linear-gradient(135deg, #166534, #14532d); color: white; border: 1px solid rgba(255,255,255,0.1); padding: 10px; border-radius: 12px; font-weight: 600; font-size: 0.8rem; cursor: pointer; text-decoration: none; text-align: center; flex: 1; display: flex; align-items: center; justify-content: center; gap: 5px; box-shadow: 0 4px 15px rgba(22,101,52,0.3); }
+        .edit-btn { background: rgba(212, 175, 55, 0.1); border: 1px solid var(--border-gold); color: var(--gold-light); border-radius: 12px; padding: 8px 14px; font-weight: 600; font-size: 0.78rem; cursor: pointer; flex: 1;}
+        .delete-btn { background: rgba(120, 0, 0, 0.15); border: 1px solid rgba(120, 0, 0, 0.4); color: #ff9999; border-radius: 12px; padding: 8px 14px; font-weight: 600; font-size: 0.78rem; cursor: pointer; flex: 1;}
+        .embedded-map-frame { width: 100%; height: 150px; border-radius: 14px; border: 1px solid rgba(212,175,55,0.2); margin-top: 15px; overflow: hidden; filter: sepia(0.3) hue-rotate(-15deg); }
+        .mindmap-wrapper { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 18px; margin-top: 25px; }
+        .theme-branch { background: rgba(18, 14, 10, 0.8); border-radius: 20px; padding: 20px; border: 1px solid var(--border-gold); }
+        .branch-title { font-size: 0.9rem; font-family: 'Cinzel', serif; font-weight: 700; text-align: center; padding: 12px; border-radius: 12px; margin-bottom: 18px; color: #fff; }
+        .branch-title.duygu { background: linear-gradient(135deg, #780000, #4a0000); }
+        .branch-title.yigitlik { background: linear-gradient(135deg, var(--gold), #997a00); color:#120e0a; }
+        .branch-title.yasam { background: linear-gradient(135deg, #005f73, #003f4f); }
+        .branch-title.dusunce { background: linear-gradient(135deg, #3d342b, #1f1a15); border: 1px solid var(--border-gold); }
+        .branch-title.divan { background: linear-gradient(135deg, #005f73, #0a9396); border: 1px solid #94d2bd; color:#fff;}
+        .node-list { display: flex; flex-direction: column; gap: 10px; }
+        .node-item { background: rgba(255,255,255,0.03); border: 1px solid rgba(212,175,55,0.2); padding: 12px 14px; border-radius: 12px; cursor: pointer; font-weight: 600; font-size: 0.85rem; text-align: center; color: var(--gold-light); }
+        .node-item:hover { background: var(--gold); color: #120e0a; border-color: var(--gold); transform: scale(1.02); }
+        .game-card { background: rgba(18, 14, 10, 0.9); border: 1px solid var(--border-gold); border-radius: 24px; padding: 40px; max-width: 620px; margin: 0 auto; text-align: center; box-shadow: 0 25px 60px rgba(0,0,0,0.8); }
+        .clue-box { background: rgba(0, 0, 0, 0.4); border-left: 4px solid var(--gold); padding: 18px; margin: 18px 0; text-align: left; border-radius: 0 14px 14px 0; font-size: 0.95rem; color: #e8e0d5; border: 1px solid rgba(212,175,55,0.1); border-left: none; font-family: 'Playfair Display', serif; font-style: italic; }
+        .alphabet-bar { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; margin-bottom: 25px; background: rgba(0,0,0,0.4); padding: 15px; border-radius: 16px; border: 1px solid rgba(10, 147, 150, 0.3); }
+        .alpha-btn { width: 36px; height: 36px; background: rgba(10, 147, 150, 0.15); border: 1px solid rgba(10, 147, 150, 0.4); color: #94d2bd; border-radius: 10px; font-weight: 700; font-size: 0.85rem; cursor: pointer; display: flex; align-items: center; justify-content: center; font-family: 'Cinzel', serif; }
+        .alpha-btn:hover { background: #0a9396; color: #fff; transform: translateY(-2px); }
+        .alpha-btn.active { background: linear-gradient(135deg, #0a9396, #005f73); color: #fff; border-color: #fff; box-shadow: 0 0 12px rgba(10,147,150,0.6); }
+        .nisanyan-card { background: rgba(0, 95, 115, 0.12); border: 1px solid rgba(10, 147, 150, 0.35); padding: 22px; border-radius: 16px; margin-bottom: 18px; text-align: left; position: relative; }
+        .nisanyan-card:hover { border-color: #94d2bd; background: rgba(0, 95, 115, 0.2); }
+        .nisanyan-word { font-family: 'Cinzel', serif; font-size: 1.3rem; font-weight: 800; color: #94d2bd; display: flex; justify-content: space-between; align-items: center; }
+        .etmo-tag { font-size: 0.7rem; background: rgba(212, 175, 55, 0.2); border: 1px solid var(--border-gold); color: var(--gold-light); padding: 3px 10px; border-radius: 8px; font-family: 'Poppins', sans-serif; }
+        .nisanyan-desc { font-family: 'Playfair Display', serif; font-size: 1rem; color: var(--text-main); margin-top: 10px; line-height: 1.6; }
+        .nisanyan-meta { font-size: 0.82rem; color: var(--text-muted); border-top: 1px dashed rgba(10, 147, 150, 0.3); padding-top: 10px; margin-top: 12px; }
+        .copyright-footer { text-align: center; margin-top: 40px; padding-top: 25px; border-top: 1px solid rgba(212,175,55,0.15); font-size: 0.85rem; color: var(--text-muted); }
+        @media print { @page { margin: 1.5cm; size: A4 portrait; } body { background: #fff !important; color: #000 !important; display: block !important; padding: 0 !important; } #vanta-bg, .nav-menu, .btn-submit, .paste-btn, form, .no-print, .btn-action-group, #oyunSekme, #ekleSekme, #divanSozlukSekme, .copyright-footer { display: none !important; } .container { border: none !important; box-shadow: none !important; max-width: 100% !important; padding: 0 !important; margin: 0 !important; background: transparent !important; } .section-box { display: none !important; opacity: 1 !important; visibility: visible !important; transform: none !important; animation: none !important; } #muzeSekme, #haritaSekme { display: block !important; page-break-after: always; } [data-aos] { opacity: 1 !important; transform: none !important; } .card-grid { display: block !important; } .treasure-card { page-break-inside: avoid !important; border: 2px solid #333 !important; background: #fff !important; margin-bottom: 25px !important; box-shadow: none !important; width: 100% !important; display: flex !important; flex-direction: row !important; align-items: center !important; } .treasure-card::before { display: none !important; } .img-container { width: 30% !important; height: 100% !important; min-height: 180px; border-bottom: none !important; border-right: 2px solid #333 !important; background: #f9f9f9 !important; padding: 15px !important; } .card-body { width: 70% !important; padding: 20px 25px !important; } .card-img { filter: grayscale(100%) contrast(120%) !important; max-height: 150px !important; } * { -webkit-text-fill-color: initial !important; color: #000 !important; text-shadow: none !important; } .header-title { font-size: 20pt !important; margin-bottom: 10pt !important; text-align: center !important; background: none !important; border-bottom: 3px double #000; padding-bottom: 10px; } .card-badge, .location-badge, .divan-badge { border: 1px solid #000 !important; background: #eee !important; color: #000 !important; } .mindmap-wrapper { display: block !important; } .theme-branch { page-break-inside: avoid; border: 2px solid #333 !important; background: #fff !important; margin-bottom: 20px !important; box-shadow: none !important; } .branch-title { background: #e0e0e0 !important; color: #000 !important; border-bottom: 2px solid #333 !important; border-radius: 0 !important; box-shadow: none !important; } .node-item { border: 1px solid #666 !important; color: #000 !important; background: #fdfdfd !important; } }
+    </style>
+</head>
+<body x-data="antolojiApp()">
+
+    <div class="word-save-indicator no-print">
+        <i :class="kayitDurumu === 'Kaydediliyor...' ? 'fa-solid fa-rotate fa-spin text-yellow-400' : (kayitDurumu.includes('Hata') ? 'fa-solid fa-triangle-exclamation text-red-400' : 'fa-solid fa-cloud-arrow-up text-emerald-400')"></i>
+        <span x-text="kayitDurumu"></span>
+    </div>
+
+    <div id="vanta-bg" style="position: fixed; z-index: -1; top: 0; left: 0; width: 100%; height: 100%;"></div>
+
+    <div class="container" style="display: block;">
+        
+        <div class="author-badge"><i class="fa-solid fa-crown"></i> Türk Dili ve Edebiyatı Öğretmeni Tuba CENGİZ</div>
+        <div class="header-title">Ünal Aysal Anadolu Lisesi Dilimizin Zenginlikleri Projesi</div>
+        <div class="sub-title">Kelime Arkeolojisi & Kapsamlı Etimolojik Divan Sözlüğü</div>
+
+        <div class="nav-menu no-print">
+            <button class="nav-btn" :class="aktifSekme === 'ekle' ? 'active' : ''" @click="aktifSekme = 'ekle'"><i class="fa-solid fa-pen-nib"></i> Yeni Kelime Ekle</button>
+            <button class="nav-btn" :class="aktifSekme === 'muze' ? 'active' : ''" @click="aktifSekme = 'muze'; setTimeout(() => AOS.refresh(), 100);"><i class="fa-solid fa-image-portrait"></i> Müze Sergisi</button>
+            <button class="nav-btn" :class="aktifSekme === 'harita' ? 'active' : ''" @click="aktifSekme = 'harita'; setTimeout(() => AOS.refresh(), 100);"><i class="fa-solid fa-network-wired"></i> Zihin Haritası</button>
+            <button class="nav-btn" :class="aktifSekme === 'oyun' ? 'active' : ''" @click="aktifSekme = 'oyun'; bulmacaBaslat();"><i class="fa-solid fa-crosshairs"></i> Kelime Avı</button>
+            <button class="nav-btn divan-btn" :class="aktifSekme === 'divan' ? 'active' : ''" @click="aktifSekme = 'divan'"><i class="fa-solid fa-book-quran"></i> Etimolojik Sözlük</button>
+            <button class="nav-btn" @click="pdfOlustur()"><i class="fa-solid fa-file-pdf"></i> E-Sözlük PDF</button>
+        </div>
+
+        <div x-show="aktifSekme === 'ekle'" class="section-box" :class="aktifSekme === 'ekle' ? 'active' : ''">
+            <h3 style="color:var(--gold-light); text-align:center; margin-top:0; font-family:'Cinzel', serif;" x-text="editIndex === -1 ? '✨ Yeni Arkeolojik Hazine Ekle' : '✏️ Kelimeyi Düzenle'"></h3>
+            <form @submit.prevent="kaydet()">
+                
+                <div class="input-group">
+                    <div class="label-container">
+                        <label><i class="fa-solid fa-user-graduate"></i> Arkeolog Öğrenci (Ad Soyad):</label>
+                        <button type="button" @click="panodanYapistir('ogrenci')" class="paste-btn"><i class="fa-solid fa-clipboard"></i> Yapıştır</button>
+                    </div>
+                    <input type="text" id="ogrenci" x-model="form.ogrenci" placeholder="Örn: 117 ALİ DEMİREL" required>
+                </div>
+
+                <div class="input-group">
+                    <div class="label-container">
+                        <label><i class="fa-solid fa-gem"></i> İncelenen Kelime:</label>
+                        <button type="button" @click="panodanYapistir('kelime')" class="paste-btn"><i class="fa-solid fa-clipboard"></i> Yapıştır</button>
+                    </div>
+                    <input type="text" id="kelime" x-model="form.kelime" placeholder="Örn: YABGU" required>
+                </div>
+
+                <div class="input-group">
+                    <div class="label-container">
+                        <label><i class="fa-solid fa-location-dot"></i> Harita Konumu (Şehir / Ülke):</label>
+                        <button type="button" @click="panodanYapistir('konum')" class="paste-btn"><i class="fa-solid fa-clipboard"></i> Yapıştır</button>
+                    </div>
+                    <input type="text" id="konum" x-model="form.konum" placeholder="Örn: Ötüken, Moğolistan" required>
+                </div>
+
+                <div class="input-group">
+                    <div class="label-container">
+                        <label><i class="fa-solid fa-tag"></i> Kelime Teması:</label>
+                    </div>
+                    <select x-model="form.tema" required>
+                        <option value="duygu">💖 Duygu & Gönül Dünyası</option>
+                        <option value="yigitlik">⚔️ Yiğitlik & Savaş Kültürü</option>
+                        <option value="yasam">🌿 Gündelik Yaşam & Doğa</option>
+                        <option value="dusunce">💡 Bilgelik & Düşünce</option>
+                        <option value="divan" style="background:#005f73; color:#fff;">📜 Divânu Lugâti't-Türk Özel</option>
+                    </select>
+                </div>
+
+                <div class="input-group">
+                    <div class="label-container">
+                        <label><i class="fa-solid fa-image"></i> Edebi Görsel Yükle (Cihazdan Seç):</label>
+                    </div>
+                    
+                    <div x-show="form.gorselData" style="margin-bottom: 10px;" class="no-print">
+                        <span style="font-size: 0.75rem; color: var(--gold-light);">Mevcut Görsel Önizleme:</span><br>
+                        <img :src="form.gorselData" style="max-height: 80px; border-radius: 8px; border: 1px solid var(--border-gold); margin-top: 5px; object-fit: cover;">
+                    </div>
+                    
+                    <input type="file" id="gorselDosya" accept="image/*" @change="gorselYukle($event)" :required="editIndex === -1 && !form.gorselData">
+                    <p style="font-size: 0.7rem; color: #10b981; margin-top: 5px;"><i class="fa-solid fa-circle-check"></i> Fotoğraflar optimize edilerek doğrudan sunucuya kaydedilir.</p>
+                </div>
+
+                <div class="input-group">
+                    <div class="label-container">
+                        <label><i class="fa-solid fa-book"></i> Köken & Ek Açıklama:</label>
+                        <button type="button" @click="panodanYapistir('ilkAnlam')" class="paste-btn"><i class="fa-solid fa-clipboard"></i> Yapıştır</button>
+                    </div>
+                    <textarea id="ilkAnlam" x-model="form.ilkAnlam" rows="3" placeholder="Eski Türkçe yabgu..." required></textarea>
+                </div>
+
+                <div class="input-group">
+                    <div class="label-container">
+                        <label><i class="fa-solid fa-scroll"></i> Tarihçe & İlk Kaynaklar:</label>
+                        <button type="button" @click="panodanYapistir('evrimKok')" class="paste-btn"><i class="fa-solid fa-clipboard"></i> Yapıştır</button>
+                    </div>
+                    <textarea id="evrimKok" x-model="form.evrimKok" rows="3" placeholder="[Orhun Yazıtları, 735]..." required></textarea>
+                </div>
+
+                <button type="submit" class="btn-submit"><i class="fa-solid fa-bolt"></i> Etimoloji Arşivine Kaydet!</button>
+            </form>
+        </div>
+
+        <div id="muzeSekme" class="section-box" :class="aktifSekme === 'muze' ? 'active' : ''">
+            <h3 style="color:var(--gold-light); text-align:center; margin-top:0; font-family:'Cinzel', serif;" class="no-print">📜 Ünal Aysal Anadolu Lisesi Kelime Arkeolojisi Sergisi</h3>
+            <div class="card-grid">
+                <template x-for="(b, index) in bulgular" :key="index">
+                    <div class="treasure-card" :class="b.tema === 'divan' ? 'divan-card' : ''" data-aos="fade-up" data-aos-duration="700">
+                        <div class="img-container">
+                            <img :src="b.gorselData" class="card-img" alt="Görsel">
+                        </div>
+                        <div class="card-body">
+                            <span class="card-badge" x-text="'ÖĞRENCİ #' + (index + 1)"></span>
+                            <span x-show="b.tema === 'divan'" class="divan-badge" title="Divânu Lugâti't-Türk Eserinde Geçmektedir"><i class="fa-solid fa-scroll"></i> Kaşgarlı Mührü</span>
+                            <br>
+                            <span class="location-badge"><i class="fa-solid fa-earth-asia"></i> <span x-text="b.konum"></span></span>
+                            
+                            <h3 style="color:var(--gold-light); margin: 15px 0 8px 0; font-family:'Cinzel', serif;"><i class="fa-solid fa-gem" style="color:var(--gold); font-size:0.8em;"></i> <span x-text="b.kelime.toUpperCase()"></span></h3>
+                            <p style="font-size:0.78rem; color:var(--text-muted); margin-bottom:12px;"><b><i class="fa-solid fa-user-graduate"></i> Araştırmacı:</b> <span x-text="b.ogrenci"></span></p>
+                            
+                            <p style="font-size:0.85rem; line-height: 1.6; font-family:'Playfair Display', serif;"><b>Köken & Açıklama:</b> <span x-text="b.ilkAnlam"></span></p>
+                            <p style="font-size:0.85rem; color:#94d2bd; line-height: 1.6; margin-top: 8px; font-family:'Playfair Display', serif;"><b>Tarihçe & Kaynak:</b> <span x-text="b.evrimKok"></span></p>
+
+                            <div class="btn-action-group no-print">
+                                <div class="row-btns">
+                                    <button class="speak-btn" @click="seslendir(b.kelime, b.ilkAnlam)"><i class="fa-solid fa-volume-high"></i> Dinle</button>
+                                    <a :href="'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(b.konum)" target="_blank" class="direct-map-btn"><i class="fa-solid fa-map-location-dot"></i> Maps</a>
+                                </div>
+                                <div class="row-btns">
+                                    <a :href="'https://sozluk.gov.tr/?ara=' + encodeURIComponent(b.kelime)" target="_blank" class="tdk-btn"><i class="fa-solid fa-book"></i> TDK Sözlük</a>
+                                    <a :href="'https://www.nisanyansozluk.com/kelime/' + encodeURIComponent(b.kelime)" target="_blank" class="nisanyan-btn"><i class="fa-solid fa-book-open-reader"></i> Nişanyan</a>
+                                </div>
+                                <div class="row-btns" style="margin-top: 5px;">
+                                    <button class="edit-btn" @click="duzenle(index)"><i class="fa-solid fa-pen-to-square"></i> Düzenle</button>
+                                    <button class="delete-btn" @click="sil(index)"><i class="fa-solid fa-trash-can"></i> Sil</button>
+                                </div>
+                            </div>
+                            <div class="embedded-map-frame no-print">
+                                <iframe width="100%" height="100%" frameborder="0" style="border:0;" :src="'https://maps.google.com/maps?q=' + encodeURIComponent(b.konum) + '&t=&z=6&ie=UTF8&iwloc=&output=embed'" allowfullscreen></iframe>
+                            </div>
+                        </div>
+                    </div>
+                </template>
+            </div>
+        </div>
+
+        <div id="haritaSekme" class="section-box" :class="aktifSekme === 'harita' ? 'active' : ''">
+            <h3 style="color:var(--gold-light); text-align:center; margin-top:0; font-family:'Cinzel', serif;" class="no-print">🕸️ Tematik Kelime Zihin Haritası</h3>
+            <div class="mindmap-wrapper">
+                <template x-for="(tema, tIndex) in temalar" :key="tema.id">
+                    <div class="theme-branch" data-aos="fade-up" data-aos-duration="600">
+                        <div class="branch-title" :class="tema.id" x-html="tema.icon + ' ' + tema.ad"></div>
+                        <div class="node-list">
+                            <template x-for="(b, index) in bulgular.filter(x => x.tema === tema.id)" :key="index">
+                                <div class="node-item" @click="secilenDetay = b">
+                                    <i class="fa-solid fa-gem" style="color:var(--gold); font-size:0.8em; margin-right:5px;"></i> 
+                                    <span x-text="b.kelime.toUpperCase()"></span>
+                                </div>
+                            </template>
+                        </div>
+                    </div>
+                </template>
+            </div>
+            
+            <div style="margin-top:30px;" x-show="secilenDetay">
+                <div class="treasure-card" :class="secilenDetay?.tema === 'divan' ? 'divan-card' : ''" style="max-width:520px; margin:auto;" data-aos="zoom-in" data-aos-duration="500">
+                    <div class="img-container" style="height:170px;">
+                        <img :src="secilenDetay?.gorselData" class="card-img">
+                    </div>
+                    <div class="card-body">
+                        <span class="location-badge"><i class="fa-solid fa-earth-asia"></i> <span x-text="secilenDetay?.konum"></span></span>
+                        <h3 style="color:var(--gold-light); margin:12px 0 8px 0; font-family:'Cinzel',serif;"><i class="fa-solid fa-gem" style="color:var(--gold); font-size:0.8em;"></i> <span x-text="secilenDetay?.kelime?.toUpperCase()"></span></h3>
+                        <p style="font-size:0.8rem; color:var(--text-muted);"><i class="fa-solid fa-user-graduate"></i> <b>Araştırmacı:</b> <span x-text="secilenDetay?.ogrenci"></span></p>
+                        
+                        <p style="font-size:0.85rem; font-family:'Playfair Display', serif; margin-top:8px;"><b>Köken & Açıklama:</b> <span x-text="secilenDetay?.ilkAnlam"></span></p>
+                        <p style="font-size:0.85rem; color:#94d2bd; font-family:'Playfair Display', serif; margin-top:8px;"><b>Tarihçe & Kaynak:</b> <span x-text="secilenDetay?.evrimKok"></span></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="oyunSekme" class="section-box" :class="aktifSekme === 'oyun' ? 'active' : ''">
+            <div class="game-card">
+                <h2 style="color:var(--gold-light); font-family:'Cinzel', serif; margin-top:0;"><i class="fa-solid fa-crosshairs"></i> Kelime Avı & Arkeolojik Bulmaca</h2>
+                <p style="color:var(--text-muted); font-size:0.88rem;">İpuçlarını dikkatle oku, 9/A sınıfının bulduğu kayıp kelimeyi keşfet!</p>
+                
+                <div>
+                    <div class="clue-box"><i class="fa-solid fa-earth-asia"></i> <b>Coğrafi Konum:</b> <span x-text="bulmaca?.konum"></span></div>
+                    <div class="clue-box"><i class="fa-solid fa-magnifying-glass"></i> <b>Köken & Açıklama:</b> <span x-text="bulmaca?.ilkAnlam"></span></div>
+                    <div class="clue-box"><i class="fa-solid fa-hourglass-half"></i> <b>Tarihçe & Kaynak:</b> <span x-text="bulmaca?.evrimKok"></span></div>
+
+                    <div class="input-group">
+                        <div class="label-container">
+                            <label style="text-align:center; width: 100%;"><i class="fa-regular fa-lightbulb"></i> Gizli Kelime Tahminin Nedir?</label>
+                        </div>
+                        <input type="text" x-model="tahmin" placeholder="Kelimeyi buraya yazın..." style="text-align:center; text-transform:uppercase; font-weight:700;">
+                    </div>
+
+                    <button class="btn-submit" @click="tahminKontrol()"><i class="fa-solid fa-wand-magic-sparkles"></i> Tahmini Onayla</button>
+                </div>
+                
+                <div style="margin-top:18px; font-weight:700; font-size:1.05rem;" x-text="oyunMesaj" :style="oyunBasarili ? 'color:#10b981;' : 'color:#ef4444;'"></div>
+                <button x-show="oyunBasarili" class="nav-btn" style="margin-top:22px; width:100%; justify-content:center;" @click="bulmacaBaslat()"><i class="fa-solid fa-rotate-right"></i> Sonraki Bulmacaya Geç</button>
+            </div>
+        </div>
+
+        <div id="divanSozlukSekme" class="section-box" :class="aktifSekme === 'divan' ? 'active' : ''">
+            <h3 style="color:#94d2bd; text-align:center; margin-top:0; font-family:'Cinzel', serif;" class="no-print"><i class="fa-solid fa-book-quran"></i> Divânu Lugâti't-Türk Etimolojik Sözlük Arşivi</h3>
+            <p style="text-align:center; color:var(--text-muted); font-size:0.9rem; margin-bottom:25px;">Kâşgarlı Mahmud'un eserinden derlenen ve genişletilmiş arşivi içeren A'dan Z'ye kelime hazinesi.</p>
+            
+            <div style="max-width: 800px; margin: 0 auto;" x-init="veriYukle()">
+                
+                <div class="alphabet-bar">
+                    <button class="alpha-btn" :class="secilenHarf === '' ? 'active' : ''" @click="secilenHarf = ''">Tümü</button>
+                    <template x-for="harf in alfabe" :key="harf">
+                        <button class="alpha-btn" :class="secilenHarf === harf ? 'active' : ''" @click="secilenHarf = (secilenHarf === harf ? '' : harf)" x-text="harf"></button>
+                    </template>
+                </div>
+
+                <div class="input-group" style="margin-bottom: 25px;">
+                    <input type="text" x-model="divanArama" placeholder="🔍 Sözlükte kelime, köken veya anlam ara..." style="border-color: rgba(10, 147, 150, 0.5); padding: 14px; font-size:1rem; text-align:center;">
+                </div>
+
+                <div style="max-height: 500px; overflow-y: auto; padding-right:10px;">
+                    <div x-show="divanSonuclar.length === 0" style="text-align:center; color:#ff9999; padding: 30px;">
+                        Aradığınız kelime bulunamadı veya JSON yükleniyor...
+                    </div>
+
+                    <template x-for="k in divanSonuclar" :key="k.sozcuk">
+                        <div class="nisanyan-card" data-aos="fade-up">
+                            <div class="nisanyan-word">
+                                <span><i class="fa-solid fa-feather-pointed" style="font-size: 0.9em; margin-right: 8px;"></i> <span x-text="k.sozcuk.toUpperCase()"></span></span>
+                                <span class="etmo-tag" x-text="k.koken"></span>
+                            </div>
+                            <div class="nisanyan-desc" x-text="k.anlam"></div>
+                            <div class="nisanyan-meta">
+                                <b>İlk Tanıklık / Kaynak:</b> <span x-text="k.tanik"></span>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="copyright-footer">
+            <b>Ünal Aysal Anadolu Lisesi Dilimizin Zenginlikleri Projesi</b><br>
+            Proje Sahibi & Koordinatör: <b>Türk Dili ve Edebiyatı Öğretmeni Tuba CENGİZ</b> © 2026
+        </div>
+    </div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.fog.min.js"></script>
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        AOS.init({ once: true, duration: 800 });
+        VANTA.FOG({
+            el: "#vanta-bg", mouseControls: true, touchControls: true, gyroControls: false,
+            minHeight: 200.00, minWidth: 200.00, highlightColor: 0x2a1f18, midtoneColor: 0x780000,
+            lowlightColor: 0x005f73, baseColor: 0x120e0a, blurFactor: 0.60, speed: 1.50, zoom: 0.50
+        });
+    });
+
+    function antolojiApp() {
+        return {
+            aktifSekme: 'muze', editIndex: -1, secilenDetay: null, tahmin: '', oyunMesaj: '', oyunBasarili: false,
+            bulmaca: {}, kayitDurumu: 'Sunucuya Bağlanıyor...', divanArama: '', secilenHarf: '', nisanyanArsivi: [],
+            alfabe: ['A', 'B', 'C', 'Ç', 'D', 'E', 'F', 'G', 'Ğ', 'H', 'I', 'İ', 'J', 'K', 'L', 'M', 'N', 'O', 'Ö', 'P', 'R', 'S', 'Ş', 'T', 'U', 'Ü', 'V', 'Y', 'Z'],
+            temalar: [
+                { id: 'duygu', ad: 'Duygu & Gönül', icon: '<i class="fa-solid fa-heart"></i>' },
+                { id: 'yigitlik', ad: 'Yiğitlik & Savaş', icon: '<i class="fa-solid fa-khanda"></i>' },
+                { id: 'yasam', ad: 'Gündelik Yaşam', icon: '<i class="fa-solid fa-leaf"></i>' },
+                { id: 'dusunce', ad: 'Bilgelik & Düşünce', icon: '<i class="fa-solid fa-lightbulb"></i>' },
+                { id: 'divan', ad: 'Divânu Lugâti\'t-Türk', icon: '<i class="fa-solid fa-scroll"></i>' }
+            ],
+            
+            bulgular: [], 
+
+            async init() {
+                try {
+                    let response = await fetch('/api/kelimeler');
+                    let data = await response.json();
+                    if (data && data.length > 0) {
+                        this.bulgular = data;
+                    } else {
+                        this.varsayilanlariYukle();
+                    }
+                    this.kayitDurumu = 'Sistem Hazır';
+                } catch (e) {
+                    this.kayitDurumu = 'Bağlantı Hatası!';
+                    this.varsayilanlariYukle();
+                }
+
+                this.veriYukle();
+                this.bulmacaBaslat();
+            },
+
+            async veriKaydet() {
+                this.kayitDurumu = 'Sunucuya Kaydediliyor...';
+                try {
+                    const response = await fetch('/api/kaydet', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(this.bulgular)
+                    });
+                    
+                    const result = await response.json();
+                    if (result.status === 'success') {
+                        this.kayitDurumu = 'Sunucuda Güncel';
+                        setTimeout(() => { if(this.kayitDurumu === 'Sunucuda Güncel') this.kayitDurumu = 'Bulutta güvenle saklanıyor'; }, 2000);
+                    } else { throw new Error('Kayıt başarısız'); }
+                } catch (e) {
+                    this.kayitDurumu = 'Sunucu Hatası!';
+                }
+            },
+
+            varsayilanlariYukle() {
+                this.bulgular = [
+                    { ogrenci: "117 ALİ DEMİREL", kelime: "YABGU", konum: "Ötüken, Moğolistan", tema: "yigitlik", gorselData: "https://images.unsplash.com/photo-1540306354471-a0684f0464f1?w=400&q=80", ilkAnlam: "Eski Türkçe yabgu 'hakana tabi bir yönetici unvanı, prens'.", evrimKok: "[Orhun Yazıtları, 735] yabġuġ şādıġ anta birmiş." },
+                    { ogrenci: "256 İBRAHİM ÇINAR", kelime: "SAGU", konum: "Balasagun", tema: "divan", gorselData: "https://images.unsplash.com/photo-1502224562085-639556652f33?w=400&q=80", ilkAnlam: "Ölenin ardından söylenen yas şiiri, ağıt.", evrimKok: "[Divânu Lugâti't-Türk, 1074] Alp Er Tunga öldi mü / Isız ajun kaldı mu" }
+                ];
+                this.veriKaydet();
+            },
+
+            async panodanYapistir(hedefId) {
+                try {
+                    const metin = await navigator.clipboard.readText();
+                    this.form[hedefId] = metin;
+                } catch (err) { alert("⚠️ Panoya erişim izni alınamadı."); }
+            },
+
+            gorselYukle(event) {
+                const file = event.target.files[0];
+                if (!file) return;
+                
+                this.kayitDurumu = 'Görsel işleniyor...';
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const img = new Image();
+                    img.onload = () => {
+                        const canvas = document.createElement('canvas');
+                        const MAX_WIDTH = 380, MAX_HEIGHT = 380;
+                        let width = img.width, height = img.height;
+
+                        if (width > height) { if (width > MAX_WIDTH) { height *= MAX_WIDTH / width; width = MAX_WIDTH; } } 
+                        else { if (height > MAX_HEIGHT) { width *= MAX_HEIGHT / height; height = MAX_HEIGHT; } }
+                        
+                        canvas.width = width; canvas.height = height;
+                        const ctx = canvas.getContext('2d');
+                        ctx.drawImage(img, 0, 0, width, height);
+                        this.form.gorselData = canvas.toDataURL('image/jpeg', 0.55);
+                        this.kayitDurumu = 'Görsel hazır';
+                    };
+                    img.src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            },
+
+            kaydet() {
+                if (this.editIndex === -1 && !this.form.gorselData) { alert("Lütfen cihazdan bir görsel seçiniz!"); return; }
+                if(this.editIndex === -1) { this.bulgular.push({...this.form}); } 
+                else { this.bulgular[this.editIndex] = {...this.form}; this.editIndex = -1; }
+                
+                this.veriKaydet();
+                this.form = { ogrenci: '', kelime: '', konum: '', tema: 'duygu', gorselData: '', ilkAnlam: '', evrimKok: '' };
+                document.getElementById('gorselDosya').value = "";
+                
+                this.aktifSekme = 'muze';
+                setTimeout(() => AOS.refresh(), 100);
+            },
+
+            duzenle(index) { this.form = {...this.bulgular[index]}; this.editIndex = index; this.aktifSekme = 'ekle'; },
+            sil(index) { if(confirm("Kelimeyi silmek istediğinize emin misiniz?")) { this.bulgular.splice(index, 1); this.veriKaydet(); } },
+
+            seslendir(kelime, anlam) {
+                if ('speechSynthesis' in window) {
+                    window.speechSynthesis.cancel();
+                    const ses = new SpeechSynthesisUtterance(kelime + " kelimesi. Köken ve Açıklaması: " + anlam);
+                    ses.lang = 'tr-TR'; ses.rate = 0.95; window.speechSynthesis.speak(ses);
+                } else { alert("Tarayıcınız sesli okuma özelliğini desteklemiyor."); }
+            },
+
+            pdfOlustur() { window.print(); },
+
+            bulmacaBaslat() {
+                if(this.bulgular.length === 0) return;
+                this.bulmaca = this.bulgular[Math.floor(Math.random() * this.bulgular.length)];
+                this.tahmin = ''; this.oyunMesaj = ''; this.oyunBasarili = false;
+            },
+
+            tahminKontrol() {
+                if(this.tahmin.toUpperCase().trim() === this.bulmaca.kelime.toUpperCase().trim()) {
+                    this.oyunMesaj = "🎉 Tebrikler, hazinesini buldun! 🏆"; this.oyunBasarili = true;
+                } else {
+                    this.oyunMesaj = "❌ Yanlış tahmin, tekrar dene!"; this.oyunBasarili = false;
+                }
+            },
+            
+            async veriYukle() {
+                if(this.nisanyanArsivi.length > 0) return;
+                try {
+                    let response = await fetch('divansozluk.json');
+                    this.nisanyanArsivi = await response.json();
+                } catch(e) {
+                    this.nisanyanArsivi = [
+                        { sozcuk: "Ab", koken: "Eski Türkçe", anlam: "Su.", tanik: "[Divânu Lugâti't-Türk, 1074]" },
+                        { sozcuk: "Alp", koken: "Eski Türkçe", anlam: "Yiğit, kahraman, cesur savaşçı.", tanik: "[Kâşgarlı Mahmûd, DİVÂNU LUGÂTİ'T-TÜRK]" },
+                        { sozcuk: "Ajun", koken: "Eski Türkçe", anlam: "Dünya, cihan, kainat.", tanik: "[Divânu Lugâti't-Türk, 1074]" },
+                        { sozcuk: "Kınık", koken: "Oğuz Boyu", anlam: "Selçukluların çıkardığı en ulu Oğuz boyu.", tanik: "[Tıpkıbasım Metinleri, S. 75]" }
+                    ];
+                }
+            },
+
+            get divanSonuclar() {
+                return this.nisanyanArsivi.filter(k => {
+                    let harfUyumu = true;
+                    if (this.secilenHarf !== '') { harfUyumu = k.sozcuk.toUpperCase().startsWith(this.secilenHarf); }
+                    
+                    let aramaUyumu = true;
+                    if (this.divanArama.trim() !== '') {
+                        let aranan = this.divanArama.toLowerCase();
+                        aramaUyumu = k.sozcuk.toLowerCase().includes(aranan) || k.anlam.toLowerCase().includes(aranan) || k.koken.toLowerCase().includes(aranan);
+                    }
+                    return harfUyumu && aramaUyumu;
+                });
+            },
+
+            form: { ogrenci: '', kelime: '', konum: '', tema: 'duygu', gorselData: '', ilkAnlam: '', evrimKok: '' }
+        }
+    }
+</script>
+</body>
+</html>
