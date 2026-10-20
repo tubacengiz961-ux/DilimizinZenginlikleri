@@ -70,8 +70,6 @@
         .direct-map-btn { background: linear-gradient(135deg, #f72585, #b5179e); color: white; border: 1px solid rgba(255,255,255,0.1); padding: 10px; border-radius: 12px; font-weight: 600; font-size: 0.8rem; cursor: pointer; text-decoration: none; text-align: center; flex: 1; display: flex; align-items: center; justify-content: center; gap: 5px; }
         .tdk-btn { background: linear-gradient(135deg, #7209b7, #560bad); color: white; border: 1px solid rgba(255,255,255,0.1); padding: 10px; border-radius: 12px; font-weight: 600; font-size: 0.8rem; cursor: pointer; text-decoration: none; text-align: center; flex: 1; display: flex; align-items: center; justify-content: center; gap: 5px; }
         .nisanyan-btn { background: linear-gradient(135deg, #2b9348, #007f5f); color: white; border: 1px solid rgba(255,255,255,0.1); padding: 10px; border-radius: 12px; font-weight: 600; font-size: 0.8rem; cursor: pointer; text-decoration: none; text-align: center; flex: 1; display: flex; align-items: center; justify-content: center; gap: 5px; }
-        .edit-btn { background: rgba(72, 202, 228, 0.1); border: 1px solid var(--border-gold); color: var(--gold-light); border-radius: 12px; padding: 8px 14px; font-weight: 600; font-size: 0.78rem; cursor: pointer; flex: 1;}
-        .delete-btn { background: rgba(230, 57, 70, 0.15); border: 1px solid rgba(230, 57, 70, 0.4); color: #ff8689; border-radius: 12px; padding: 8px 14px; font-weight: 600; font-size: 0.78rem; cursor: pointer; flex: 1;}
         .embedded-map-frame { width: 100%; height: 150px; border-radius: 14px; border: 1px solid rgba(148,210,189,0.2); margin-top: 15px; overflow: hidden; filter: invert(90%) hue-rotate(180deg); }
         .mindmap-wrapper { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 18px; margin-top: 25px; }
         .theme-branch { background: rgba(11, 19, 43, 0.8); border-radius: 20px; padding: 20px; border: 1px solid var(--border-gold); }
@@ -103,8 +101,8 @@
 <body x-data="antolojiApp()">
 
     <div class="word-save-indicator no-print">
-        <i :class="kayitDurumu === 'Kaydediliyor...' ? 'fa-solid fa-rotate fa-spin text-blue-400' : (kayitDurumu.includes('Hata') ? 'fa-solid fa-triangle-exclamation text-red-400' : 'fa-solid fa-cloud-arrow-up text-emerald-400')"></i>
-        <span x-text="kayitDurumu"></span>
+        <i class="fa-solid fa-cloud-arrow-up text-emerald-400"></i>
+        <span>Bulutta Sabit & Ortak Arşiv</span>
     </div>
 
     <div id="vanta-bg" style="position: fixed; z-index: -1; top: 0; left: 0; width: 100%; height: 100%;"></div>
@@ -116,87 +114,11 @@
         <div class="sub-title">Kelime Arkeolojisi & Kapsamlı Etimolojik Divan Sözlüğü</div>
 
         <div class="nav-menu no-print">
-            <button class="nav-btn" :class="aktifSekme === 'ekle' ? 'active' : ''" @click="aktifSekme = 'ekle'"><i class="fa-solid fa-pen-nib"></i> Yeni Kelime Ekle</button>
             <button class="nav-btn" :class="aktifSekme === 'muze' ? 'active' : ''" @click="aktifSekme = 'muze'; setTimeout(() => AOS.refresh(), 100);"><i class="fa-solid fa-image-portrait"></i> Müze Sergisi</button>
             <button class="nav-btn" :class="aktifSekme === 'harita' ? 'active' : ''" @click="aktifSekme = 'harita'; setTimeout(() => AOS.refresh(), 100);"><i class="fa-solid fa-network-wired"></i> Zihin Haritası</button>
             <button class="nav-btn" :class="aktifSekme === 'oyun' ? 'active' : ''" @click="aktifSekme = 'oyun'; bulmacaBaslat();"><i class="fa-solid fa-crosshairs"></i> Kelime Avı</button>
             <button class="nav-btn divan-btn" :class="aktifSekme === 'divan' ? 'active' : ''" @click="aktifSekme = 'divan'"><i class="fa-solid fa-book-quran"></i> Etimolojik Sözlük</button>
             <button class="nav-btn" @click="pdfOlustur()"><i class="fa-solid fa-file-pdf"></i> E-Sözlük PDF</button>
-        </div>
-
-        <div x-show="aktifSekme === 'ekle'" class="section-box" :class="aktifSekme === 'ekle' ? 'active' : ''">
-            <h3 style="color:var(--gold-light); text-align:center; margin-top:0; font-family:'Cinzel', serif;" x-text="editIndex === -1 ? '✨ Yeni Arkeolojik Hazine Ekle' : '✏️ Kelimeyi Düzenle'"></h3>
-            <form @submit.prevent="kaydet()">
-                
-                <div class="input-group">
-                    <div class="label-container">
-                        <label><i class="fa-solid fa-school"></i> Sınıf ve Öğrenci No:</label>
-                        <button type="button" @click="panodanYapistir('ogrenci')" class="paste-btn"><i class="fa-solid fa-clipboard"></i> Yapıştır</button>
-                    </div>
-                    <input type="text" id="ogrenci" x-model="form.ogrenci" placeholder="Örn: 11-A / 117" required>
-                </div>
-
-                <div class="input-group">
-                    <div class="label-container">
-                        <label><i class="fa-solid fa-gem"></i> İncelenen Kelime:</label>
-                        <button type="button" @click="panodanYapistir('kelime')" class="paste-btn"><i class="fa-solid fa-clipboard"></i> Yapıştır</button>
-                    </div>
-                    <input type="text" id="kelime" x-model="form.kelime" placeholder="Örn: YABGU" required>
-                </div>
-
-                <div class="input-group">
-                    <div class="label-container">
-                        <label><i class="fa-solid fa-location-dot"></i> Harita Konumu (Şehir / Ülke):</label>
-                        <button type="button" @click="panodanYapistir('konum')" class="paste-btn"><i class="fa-solid fa-clipboard"></i> Yapıştır</button>
-                    </div>
-                    <input type="text" id="konum" x-model="form.konum" placeholder="Örn: Ötüken, Moğolistan" required>
-                </div>
-
-                <div class="input-group">
-                    <div class="label-container">
-                        <label><i class="fa-solid fa-tag"></i> Kelime Teması:</label>
-                    </div>
-                    <select x-model="form.tema" required>
-                        <option value="duygu">💖 Duygu & Gönül Dünyası</option>
-                        <option value="yigitlik">⚔️ Yiğitlik & Savaş Kültürü</option>
-                        <option value="yasam">🌿 Gündelik Yaşam & Doğa</option>
-                        <option value="dusunce">💡 Bilgelik & Düşünce</option>
-                        <option value="divan" style="background:#0077b6; color:#fff;">📜 Divânu Lugâti't-Türk Özel</option>
-                    </select>
-                </div>
-
-                <div class="input-group">
-                    <div class="label-container">
-                        <label><i class="fa-solid fa-image"></i> Edebi Görsel Yükle (Cihazdan Seç):</label>
-                    </div>
-                    
-                    <div x-show="form.gorselData" style="margin-bottom: 10px;" class="no-print">
-                        <span style="font-size: 0.75rem; color: var(--gold-light);">Mevcut Görsel Önizleme:</span><br>
-                        <img :src="form.gorselData" style="max-height: 80px; border-radius: 8px; border: 1px solid var(--border-gold); margin-top: 5px; object-fit: cover;">
-                    </div>
-                    
-                    <input type="file" id="gorselDosya" accept="image/*" @change="gorselYukle($event)">
-                    <p style="font-size: 0.7rem; color: #48cae4; margin-top: 5px;"><i class="fa-solid fa-circle-check"></i> Fotoğraflar optimize edilerek doğrudan kaydedilir.</p>
-                </div>
-
-                <div class="input-group">
-                    <div class="label-container">
-                        <label><i class="fa-solid fa-book"></i> Köken & Ek Açıklama:</label>
-                        <button type="button" @click="panodanYapistir('ilkAnlam')" class="paste-btn"><i class="fa-solid fa-clipboard"></i> Yapıştır</button>
-                    </div>
-                    <textarea id="ilkAnlam" x-model="form.ilkAnlam" rows="3" placeholder="Eski Türkçe yabgu..." required></textarea>
-                </div>
-
-                <div class="input-group">
-                    <div class="label-container">
-                        <label><i class="fa-solid fa-scroll"></i> Tarihçe & İlk Kaynaklar:</label>
-                        <button type="button" @click="panodanYapistir('evrimKok')" class="paste-btn"><i class="fa-solid fa-clipboard"></i> Yapıştır</button>
-                    </div>
-                    <textarea id="evrimKok" x-model="form.evrimKok" rows="3" placeholder="[Orhun Yazıtları, 735]..." required></textarea>
-                </div>
-
-                <button type="submit" class="btn-submit"><i class="fa-solid fa-bolt"></i> Etimoloji Arşivine Kaydet!</button>
-            </form>
         </div>
 
         <div id="muzeSekme" class="section-box" :class="aktifSekme === 'muze' ? 'active' : ''">
@@ -227,10 +149,6 @@
                                 <div class="row-btns">
                                     <a :href="'https://sozluk.gov.tr/?ara=' + encodeURIComponent(b.kelime)" target="_blank" class="tdk-btn"><i class="fa-solid fa-book"></i> TDK Sözlük</a>
                                     <a :href="'https://www.nisanyansozluk.com/kelime/' + encodeURIComponent(b.kelime)" target="_blank" class="nisanyan-btn"><i class="fa-solid fa-book-open-reader"></i> Nişanyan</a>
-                                </div>
-                                <div class="row-btns" style="margin-top: 5px;">
-                                    <button class="edit-btn" @click="duzenle(index)"><i class="fa-solid fa-pen-to-square"></i> Düzenle</button>
-                                    <button class="delete-btn" @click="sil(index)"><i class="fa-solid fa-trash-can"></i> Sil</button>
                                 </div>
                             </div>
                             <div class="embedded-map-frame no-print">
@@ -363,8 +281,8 @@
 
     function antolojiApp() {
         return {
-            aktifSekme: 'muze', editIndex: -1, secilenDetay: null, tahmin: '', oyunMesaj: '', oyunBasarili: false,
-            bulmaca: {}, kayitDurumu: 'Bulutta Güvende', divanArama: '', secilenHarf: '', nisanyanArsivi: [],
+            aktifSekme: 'muze', secilenDetay: null, tahmin: '', oyunMesaj: '', oyunBasarili: false,
+            bulmaca: {}, divanArama: '', secilenHarf: '', nisanyanArsivi: [],
             alfabe: ['A', 'B', 'C', 'Ç', 'D', 'E', 'F', 'G', 'Ğ', 'H', 'I', 'İ', 'J', 'K', 'L', 'M', 'N', 'O', 'Ö', 'P', 'R', 'S', 'Ş', 'T', 'U', 'Ü', 'V', 'Y', 'Z'],
             temalar: [
                 { id: 'duygu', ad: 'Duygu & Gönül', icon: '<i class="fa-solid fa-heart"></i>' },
@@ -374,92 +292,16 @@
                 { id: 'divan', ad: 'Divânu Lugâti\'t-Türk', icon: '<i class="fa-solid fa-scroll"></i>' }
             ],
             
-            bulgular: [], 
+            // BURAYA ÖĞRENCİLERİNİZİN EKLENDİĞİ KELİMELERİ DOĞRUDAN YAZABİLİRSİNİZ.
+            // Her yeni kelimeyi bu listeye ekleyip GitHub'a attığınızda tüm cihazlarda anında görünecektir.
+            bulgular: [
+                { ogrenci: "10-B / 256", kelime: "SAGU", konum: "Balasagun", tema: "divan", gorselData: "", ilkAnlam: "Ölenin ardından söylenen yas şiiri, ağıt.", evrimKok: "[Divânu Lugâti't-Türk, 1074] Alp Er Tunga öldi mü / Isız ajun kaldı mu" }
+            ], 
 
             init() {
-                let kayitliVeri = localStorage.getItem('dilimiz_bulgular');
-                let versiyon = localStorage.getItem('dilimiz_versiyon');
-                
-                if (!kayitliVeri || versiyon !== 'v5-fotografli') {
-                    this.varsayilanlariYukle();
-                } else {
-                    try {
-                        this.bulgular = JSON.parse(kayitliVeri);
-                    } catch(e) {
-                        this.varsayilanlariYukle();
-                    }
-                }
-
                 this.veriYukle();
                 this.bulmacaBaslat();
             },
-
-            veriKaydet() {
-                try {
-                    localStorage.setItem('dilimiz_bulgular', JSON.stringify(this.bulgular));
-                    localStorage.setItem('dilimiz_versiyon', 'v5-fotografli');
-                    this.kayitDurumu = 'Cihazda Güncel';
-                    setTimeout(() => { this.kayitDurumu = 'Bulutta Güvende'; }, 2000);
-                } catch(e) {
-                    this.kayitDurumu = 'Kayıt Hatası!';
-                }
-            },
-
-            varsayilanlariYukle() {
-                this.bulgular = [
-                    { ogrenci: "10-B / 256", kelime: "SAGU", konum: "Balasagun", tema: "divan", gorselData: "", ilkAnlam: "Ölenin ardından söylenen yas şiiri, ağıt.", evrimKok: "[Divânu Lugâti't-Türk, 1074] Alp Er Tunga öldi mü / Isız ajun kaldı mu" }
-                ];
-                this.veriKaydet();
-            },
-
-            async panodanYapistir(hedefId) {
-                try {
-                    const metin = await navigator.clipboard.readText();
-                    this.form[hedefId] = metin;
-                } catch (err) { alert("⚠️ Panoya erişim izni alınamadı."); }
-            },
-
-            gorselYukle(event) {
-                const file = event.target.files[0];
-                if (!file) return;
-                
-                this.kayitDurumu = 'Görsel işleniyor...';
-                const reader = new FileReader();
-                reader.onload = (e) => {
-                    const img = new Image();
-                    img.onload = () => {
-                        const canvas = document.createElement('canvas');
-                        const MAX_WIDTH = 380, MAX_HEIGHT = 380;
-                        let width = img.width, height = img.height;
-
-                        if (width > height) { if (width > MAX_WIDTH) { height *= MAX_WIDTH / width; width = MAX_WIDTH; } } 
-                        else { if (height > MAX_HEIGHT) { width *= MAX_HEIGHT / height; height = MAX_HEIGHT; } }
-                        
-                        canvas.width = width; canvas.height = height;
-                        const ctx = canvas.getContext('2d');
-                        ctx.drawImage(img, 0, 0, width, height);
-                        this.form.gorselData = canvas.toDataURL('image/jpeg', 0.55);
-                        this.kayitDurumu = 'Görsel hazır';
-                    };
-                    img.src = e.target.result;
-                };
-                reader.readAsDataURL(file);
-            },
-
-            kaydet() {
-                if(this.editIndex === -1) { this.bulgular.unshift({...this.form}); } 
-                else { this.bulgular[this.editIndex] = {...this.form}; this.editIndex = -1; }
-                
-                this.veriKaydet();
-                this.form = { ogrenci: '', kelime: '', konum: '', tema: 'duygu', gorselData: '', ilkAnlam: '', evrimKok: '' };
-                document.getElementById('gorselDosya').value = "";
-                
-                this.aktifSekme = 'muze';
-                setTimeout(() => AOS.refresh(), 100);
-            },
-
-            duzenle(index) { this.form = {...this.bulgular[index]}; this.editIndex = index; this.aktifSekme = 'ekle'; },
-            sil(index) { if(confirm("Kelimeyi silmek istediğinize emin misiniz?")) { this.bulgular.splice(index, 1); this.veriKaydet(); } },
 
             seslendir(kelime, anlam) {
                 if ('speechSynthesis' in window) {
@@ -512,9 +354,7 @@
                     }
                     return harfUyumu && aramaUyumu;
                 });
-            },
-
-            form: { ogrenci: '', kelime: '', konum: '', tema: 'duygu', gorselData: '', ilkAnlam: '', evrimKok: '' }
+            }
         }
     }
 </script>
