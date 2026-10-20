@@ -58,7 +58,6 @@
         .treasure-card:hover { transform: translateY(-5px); border-color: #90e0ef; box-shadow: 0 20px 45px rgba(72,202,228,0.2); }
         .treasure-card.divan-card { background: linear-gradient(145deg, rgba(3, 4, 94, 0.7), rgba(0, 119, 182, 0.3)); border-color: rgba(144, 224, 239, 0.5); }
         .treasure-card.divan-card::before { background: linear-gradient(90deg, transparent, #90e0ef, transparent); }
-        .treasure-card.divan-card:hover { border-color: #90e0ef; box-shadow: 0 20px 45px rgba(0, 180, 216, 0.35); }
         .img-container { width: 100%; height: 190px; background: rgba(0, 0, 0, 0.8); display: flex; align-items: center; justify-content: center; padding: 10px; border-bottom: 1px solid rgba(148,210,189,0.15); }
         .card-img { max-width: 100%; max-height: 100%; object-fit: cover; border-radius: 12px; }
         .card-body { padding: 25px; }
@@ -205,7 +204,7 @@
             <div class="card-grid">
                 <template x-for="(b, index) in bulgular" :key="index">
                     <div class="treasure-card" :class="b.tema === 'divan' ? 'divan-card' : ''" data-aos="fade-up" data-aos-duration="700">
-                        <div class="img-container">
+                        <div class="img-container" x-show="b.gorselData">
                             <img :src="b.gorselData" class="card-img" alt="Görsel">
                         </div>
                         <div class="card-body">
@@ -263,7 +262,7 @@
             
             <div style="margin-top:30px;" x-show="secilenDetay">
                 <div class="treasure-card" :class="secilenDetay?.tema === 'divan' ? 'divan-card' : ''" style="max-width:520px; margin:auto;" data-aos="zoom-in" data-aos-duration="500">
-                    <div class="img-container" style="height:170px;">
+                    <div class="img-container" x-show="secilenDetay?.gorselData" style="height:170px;">
                         <img :src="secilenDetay?.gorselData" class="card-img">
                     </div>
                     <div class="card-body">
@@ -381,8 +380,7 @@
                 let kayitliVeri = localStorage.getItem('dilimiz_bulgular');
                 let versiyon = localStorage.getItem('dilimiz_versiyon');
                 
-                // Eğer daha önce kaydedilmiş eski versiyon varsa veya hiç yoksa güncel temiz şablonu yüklüyoruz
-                if (!kayitliVeri || versiyon !== 'v2') {
+                if (!kayitliVeri || versiyon !== 'v4-temiz') {
                     this.varsayilanlariYukle();
                 } else {
                     try {
@@ -399,7 +397,7 @@
             veriKaydet() {
                 try {
                     localStorage.setItem('dilimiz_bulgular', JSON.stringify(this.bulgular));
-                    localStorage.setItem('dilimiz_versiyon', 'v2');
+                    localStorage.setItem('dilimiz_versiyon', 'v4-temiz');
                     this.kayitDurumu = 'Cihazda Güncel';
                     setTimeout(() => { this.kayitDurumu = 'Bulutta Güvende'; }, 2000);
                 } catch(e) {
@@ -409,7 +407,7 @@
 
             varsayilanlariYukle() {
                 this.bulgular = [
-                    { ogrenci: "10-B / 256", kelime: "SAGU", konum: "Balasagun", tema: "divan", gorselData: "https://images.unsplash.com/photo-1544717305-2782549b5136?w=400&q=80", ilkAnlam: "Ölenin ardından söylenen yas şiiri, ağıt.", evrimKok: "[Divânu Lugâti't-Türk, 1074] Alp Er Tunga öldi mü / Isız ajun kaldı mu" }
+                    { ogrenci: "10-B / 256", kelime: "SAGU", konum: "Balasagun", tema: "divan", gorselData: "", ilkAnlam: "Ölenin ardından söylenen yas şiiri, ağıt.", evrimKok: "[Divânu Lugâti't-Türk, 1074] Alp Er Tunga öldi mü / Isız ajun kaldı mu" }
                 ];
                 this.veriKaydet();
             },
@@ -449,7 +447,6 @@
             },
 
             kaydet() {
-                if (this.editIndex === -1 && !this.form.gorselData) { alert("Lütfen cihazdan bir görsel seçiniz!"); return; }
                 if(this.editIndex === -1) { this.bulgular.unshift({...this.form}); } 
                 else { this.bulgular[this.editIndex] = {...this.form}; this.editIndex = -1; }
                 
