@@ -447,7 +447,7 @@
 
             kaydet() {
                 if (this.editIndex === -1 && !this.form.gorselData) { alert("Lütfen cihazdan bir görsel seçiniz!"); return; }
-                if(this.editIndex === -1) { this.bulgular.push({...this.form}); } 
+                if(this.editIndex === -1) { this.bulgular.unshift({...this.form}); } 
                 else { this.bulgular[this.editIndex] = {...this.form}; this.editIndex = -1; }
                 
                 this.veriKaydet();
