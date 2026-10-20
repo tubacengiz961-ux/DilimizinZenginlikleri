@@ -176,7 +176,7 @@
                         <img :src="form.gorselData" style="max-height: 80px; border-radius: 8px; border: 1px solid var(--border-gold); margin-top: 5px; object-fit: cover;">
                     </div>
                     
-                    <input type="file" id="gorselDosya" accept="image/*" @change="gorselYukle($event)" :required="editIndex === -1 && !form.gorselData">
+                    <input type="file" id="gorselDosya" accept="image/*" @change="gorselYukle($event)">
                     <p style="font-size: 0.7rem; color: #48cae4; margin-top: 5px;"><i class="fa-solid fa-circle-check"></i> Fotoğraflar optimize edilerek doğrudan kaydedilir.</p>
                 </div>
 
@@ -405,7 +405,6 @@
 
             varsayilanlariYukle() {
                 this.bulgular = [
-                    { ogrenci: "11-A / 117", kelime: "YABGU", konum: "Ötüken, Moğolistan", tema: "yigitlik", gorselData: "https://images.unsplash.com/photo-1540306354471-a0684f0464f1?w=400&q=80", ilkAnlam: "Eski Türkçe yabgu 'hakana tabi bir yönetici unvanı, prens'.", evrimKok: "[Orhun Yazıtları, 735] yabġuġ şādıġ anta birmiş." },
                     { ogrenci: "10-B / 256", kelime: "SAGU", konum: "Balasagun", tema: "divan", gorselData: "https://images.unsplash.com/photo-1502224562085-639556652f33?w=400&q=80", ilkAnlam: "Ölenin ardından söylenen yas şiiri, ağıt.", evrimKok: "[Divânu Lugâti't-Türk, 1074] Alp Er Tunga öldi mü / Isız ajun kaldı mu" }
                 ];
                 this.veriKaydet();
