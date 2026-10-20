@@ -204,7 +204,7 @@
             <div class="card-grid">
                 <template x-for="(b, index) in bulgular" :key="index">
                     <div class="treasure-card" :class="b.tema === 'divan' ? 'divan-card' : ''" data-aos="fade-up" data-aos-duration="700">
-                        <div class="img-container" x-show="b.gorselData">
+                        <div class="img-container" x-show="b.gorselData && b.gorselData.trim() !== ''">
                             <img :src="b.gorselData" class="card-img" alt="Görsel">
                         </div>
                         <div class="card-body">
@@ -262,7 +262,7 @@
             
             <div style="margin-top:30px;" x-show="secilenDetay">
                 <div class="treasure-card" :class="secilenDetay?.tema === 'divan' ? 'divan-card' : ''" style="max-width:520px; margin:auto;" data-aos="zoom-in" data-aos-duration="500">
-                    <div class="img-container" x-show="secilenDetay?.gorselData" style="height:170px;">
+                    <div class="img-container" x-show="secilenDetay?.gorselData && secilenDetay?.gorselData.trim() !== ''" style="height:170px;">
                         <img :src="secilenDetay?.gorselData" class="card-img">
                     </div>
                     <div class="card-body">
@@ -380,7 +380,7 @@
                 let kayitliVeri = localStorage.getItem('dilimiz_bulgular');
                 let versiyon = localStorage.getItem('dilimiz_versiyon');
                 
-                if (!kayitliVeri || versiyon !== 'v4-temiz') {
+                if (!kayitliVeri || versiyon !== 'v5-fotografli') {
                     this.varsayilanlariYukle();
                 } else {
                     try {
@@ -397,7 +397,7 @@
             veriKaydet() {
                 try {
                     localStorage.setItem('dilimiz_bulgular', JSON.stringify(this.bulgular));
-                    localStorage.setItem('dilimiz_versiyon', 'v4-temiz');
+                    localStorage.setItem('dilimiz_versiyon', 'v5-fotografli');
                     this.kayitDurumu = 'Cihazda Güncel';
                     setTimeout(() => { this.kayitDurumu = 'Bulutta Güvende'; }, 2000);
                 } catch(e) {
