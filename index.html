@@ -103,7 +103,7 @@
 <body x-data="antolojiApp()">
 
     <div class="word-save-indicator no-print">
-        <i :class="kayitDurumu === 'Bulut ile Senkronize' ? 'fa-solid fa-cloud-check text-emerald-400' : 'fa-solid fa-rotate fa-spin text-blue-400'"></i>
+        <i :class="kayitDurumu === 'Bulut ile Senkronize' ? 'fa-solid fa-cloud-check text-emerald-400' : (kayitDurumu.includes('Hata') ? 'fa-solid fa-triangle-exclamation text-red-400' : 'fa-solid fa-rotate fa-spin text-blue-400')"></i>
         <span x-text="kayitDurumu"></span>
     </div>
 
@@ -202,9 +202,14 @@
         <div id="muzeSekme" class="section-box" :class="aktifSekme === 'muze' ? 'active' : ''">
             <h3 style="color:var(--gold-light); text-align:center; margin-top:0; font-family:'Cinzel', serif;" class="no-print">📜 Ünal Aysal Anadolu Lisesi Kelime Arkeolojisi Sergisi</h3>
             
-            <div x-show="bulgular.length === 0" style="text-align:center; padding: 40px; color: var(--text-muted);">
+            <div x-show="bulgular.length === 0 && !kayitDurumu.includes('Hata')" style="text-align:center; padding: 40px; color: var(--text-muted);">
                 <i class="fa-solid fa-spinner fa-spin fa-2x" style="color:#48cae4; margin-bottom:15px;"></i><br>
                 Bulut veritabanındaki kelimeler yükleniyor...
+            </div>
+            
+            <div x-show="kayitDurumu.includes('Hata')" style="text-align:center; padding: 40px; color: #ff8689; font-weight:bold;">
+                <i class="fa-solid fa-triangle-exclamation fa-2x" style="margin-bottom:15px;"></i><br>
+                Bağlantı Kurulamadı! Lütfen Google Apps Script "Yeni Sürüm" adımlarını tekrar edin.
             </div>
 
             <div class="card-grid">
@@ -400,8 +405,17 @@
             async bulgulariGetir() {
                 this.kayitDurumu = 'Buluttan Veriler Çekiliyor...';
                 try {
-                    let response = await fetch(this.scriptURL);
-                    let data = await response.json();
+                    // Önbelleği kırarak her seferinde en güncel veriyi çeker
+                    let response = await fetch(this.scriptURL + "?t=" + new Date().getTime());
+                    let text = await response.text();
+                    
+                    let data;
+                    try {
+                        data = JSON.parse(text);
+                    } catch(err) {
+                        this.kayitDurumu = 'Yetki Hatası! (Google Dağıtım Adımlarını Kontrol Edin)';
+                        return;
+                    }
                     
                     if(data && data.length > 0) {
                         this.bulgular = data.reverse(); 
@@ -477,7 +491,6 @@
                         body: JSON.stringify(gonderilecekVeri)
                     });
                     
-                    // İşlemin buluta işlemesi için kısa bir süre bekleyip ekranı yeniliyoruz
                     setTimeout(() => this.bulgulariGetir(), 1500);
                 } catch(e) {
                     this.kayitDurumu = 'Gönderme Hatası!';
@@ -488,7 +501,7 @@
                 this.form = {...kelimeData}; 
                 this.editIndex = kelimeData.rowIndex; 
                 this.aktifSekme = 'ekle';
-                window.scrollTo(0, 0); // Sayfanın en üstüne form alanına kaydır
+                window.scrollTo(0, 0);
             },
 
             async sil(rowIndex) {
